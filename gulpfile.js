@@ -72,7 +72,7 @@ gulp.task('serve:lite', function () {
 
 /* inject partials like sidebar and navbar */
 gulp.task('injectPartial', function () {
-    return gulp.src("./**/*.html", {
+    return gulp.src("./**/chartjs.html", {
             base: "./"
         })
         .pipe(injectPartials())
@@ -109,15 +109,17 @@ gulp.task('injectAssets', function () {
 
 
 /*replace image path and linking after injection*/
-gulp.task('replacePath', function () {
-    gulp.src('pages/*/*.html', {
+gulp.task('replacePathDeep', function () {
+    return gulp.src('pages/*/*.html', {
             base: "./"
         })
         .pipe(replace('src="images/', 'src="../../images/'))
         .pipe(replace('href="pages/', 'href="../../pages/'))
         .pipe(replace('href="index.html"', 'href="../../index.html"'))
         .pipe(gulp.dest('.'));
-    gulp.src('pages/*.html', {
+});
+gulp.task('replacePath', function () {
+    return gulp.src('pages/*.html', {
             base: "./"
         })
         .pipe(replace('src="images/', 'src="../images/'))
@@ -128,7 +130,7 @@ gulp.task('replacePath', function () {
 
 
 /*sequence for injecting partials and replacing paths*/
-gulp.task('inject', gulp.series('injectPartial', 'injectAssets', 'replacePath'));
+gulp.task('inject', gulp.series('injectPartial', 'injectAssets', 'replacePathDeep'));
 
 
 /*sequence for building vendor scripts and styles*/
@@ -174,4 +176,8 @@ gulp.task('buildOptionalVendorScripts', function () {
         .pipe(concat('vendor.bundle.addons.js'))
         .pipe(gulp.dest('./vendors/js'));
 });
+
+// dummy build function
+gulp.task('build', async function() {return true});
+
 gulp.task('default', gulp.series('serve'));
