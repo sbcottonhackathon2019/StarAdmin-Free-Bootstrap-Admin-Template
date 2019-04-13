@@ -21,8 +21,23 @@ var paths = gulp.paths;
 
 
 
+gulp.task('sass', function () {
+    return gulp.src('./scss/style.scss')
+        .pipe(sourcemaps.init())
+        .pipe(sass())
+        .pipe(sourcemaps.write('./maps'))
+        .pipe(gulp.dest('./css'))
+        .pipe(browserSync.stream());
+});
+
+
+
+gulp.task('sass:watch', function () {
+    gulp.watch('./scss/**/*.scss');
+});
+
 // Static Server + watching scss/html files
-gulp.task('serve', ['sass'], function () {
+gulp.task('serve', gulp.series('sass', function () {
 
     browserSync.init({
         port: 3000,
@@ -31,11 +46,11 @@ gulp.task('serve', ['sass'], function () {
         notify: false
     });
 
-    gulp.watch('scss/**/*.scss', ['sass']);
+    gulp.watch('scss/**/*.scss', gulp.series('sass'));
     gulp.watch('**/*.html').on('change', browserSync.reload);
     gulp.watch('js/**/*.js').on('change', browserSync.reload);
 
-});
+}));
 
 
 
@@ -55,30 +70,6 @@ gulp.task('serve:lite', function () {
 });
 
 
-
-gulp.task('sass', function () {
-    return gulp.src('./scss/style.scss')
-        .pipe(sourcemaps.init())
-        .pipe(sass())
-        .pipe(sourcemaps.write('./maps'))
-        .pipe(gulp.dest('./css'))
-        .pipe(browserSync.stream());
-});
-
-
-
-gulp.task('sass:watch', function () {
-    gulp.watch('./scss/**/*.scss');
-});
-
-
-/*sequence for injecting partials and replacing paths*/
-gulp.task('inject', function () {
-    runSequence('injectPartial', 'injectAssets', 'replacePath');
-});
-
-
-
 /* inject partials like sidebar and navbar */
 gulp.task('injectPartial', function () {
     return gulp.src("./**/*.html", {
@@ -87,8 +78,6 @@ gulp.task('injectPartial', function () {
         .pipe(injectPartials())
         .pipe(gulp.dest("."));
 });
-
-
 
 /* inject Js and CCS assets into HTML */
 gulp.task('injectAssets', function () {
@@ -137,6 +126,11 @@ gulp.task('replacePath', function () {
         .pipe(gulp.dest('.'));
 });
 
+
+/*sequence for injecting partials and replacing paths*/
+gulp.task('inject', gulp.series('injectPartial', 'injectAssets', 'replacePath'));
+
+
 /*sequence for building vendor scripts and styles*/
 gulp.task('bundleVendors', function () {
     runSequence('copyRecursiveVendorFiles', 'buildBaseVendorStyles', 'buildBaseVendorScripts', 'buildOptionalVendorScripts');
@@ -180,4 +174,4 @@ gulp.task('buildOptionalVendorScripts', function () {
         .pipe(concat('vendor.bundle.addons.js'))
         .pipe(gulp.dest('./vendors/js'));
 });
-gulp.task('default', ['serve']);
+gulp.task('default', gulp.series('serve'));
