@@ -14,7 +14,7 @@ The 8 participants were divided into two groups of 4. One group worked on the fr
 - Maps: A user-interactive map was initilaized using Mapbox GL JS. HTML elements were used to embed the map in the web app. Data points on the map were visualized using Loation Markers.  
 
 
-- Charts: 
+- Charts: 5 different types of chart each displaying the test scores of students was added to the web app using Chart.Js. The types of charts displayed are: Line, Horizontal Bar, Doughnut, Pie, and Polar. The chart designs were modified using CSS. 
 
 
 -
@@ -44,6 +44,12 @@ The 8 participants were divided into two groups of 4. One group worked on the fr
 - Mapbox
 - Chart.js
 - Netlify
+- VS Code
+- AWS Lambda
+- S3
+- Markdown
+- Cloud Watch
+
 
 
 
@@ -53,5 +59,5 @@ The 8 participants were divided into two groups of 4. One group worked on the fr
 
 
 
-### To view our final project, please visit
+#### *To view our final project*, please visit
   <a href="" target="_blank"> link </a> 
