@@ -19,25 +19,21 @@ gulp.paths = {
 
 var paths = gulp.paths;
 
-
-
-gulp.task('sass', function () {
+function sass () {
     return gulp.src('./scss/style.scss')
         .pipe(sourcemaps.init())
         .pipe(sass())
         .pipe(sourcemaps.write('./maps'))
         .pipe(gulp.dest('./css'))
         .pipe(browserSync.stream());
-});
-
-
+};
 
 gulp.task('sass:watch', function () {
     gulp.watch('./scss/**/*.scss');
 });
 
 // Static Server + watching scss/html files
-gulp.task('serve', gulp.series('sass', function () {
+exports.serve = gulp.series(sass, function () {
 
     browserSync.init({
         port: 3000,
@@ -50,7 +46,7 @@ gulp.task('serve', gulp.series('sass', function () {
     gulp.watch('**/*.html').on('change', browserSync.reload);
     gulp.watch('js/**/*.js').on('change', browserSync.reload);
 
-}));
+});
 
 
 
@@ -72,8 +68,8 @@ gulp.task('serve:lite', function () {
 
 /* inject partials like sidebar and navbar */
 gulp.task('injectPartial', function () {
-    return gulp.src("./**/chartjs.html", {
-            base: "./"
+    return gulp.src("./**/*.html", {
+            base: "."
         })
         .pipe(injectPartials())
         .pipe(gulp.dest("."));
@@ -130,7 +126,7 @@ gulp.task('replacePath', function () {
 
 
 /*sequence for injecting partials and replacing paths*/
-gulp.task('inject', gulp.series('injectPartial', 'injectAssets', 'replacePathDeep'));
+gulp.task('inject', gulp.series('injectPartial', 'replacePathDeep'));
 
 
 /*sequence for building vendor scripts and styles*/
@@ -178,6 +174,6 @@ gulp.task('buildOptionalVendorScripts', function () {
 });
 
 // dummy build function
-gulp.task('build', async function() {return true});
+exports.build = async function() {return true};
 
-gulp.task('default', gulp.series('serve'));
+exports.default = exports.serve;
