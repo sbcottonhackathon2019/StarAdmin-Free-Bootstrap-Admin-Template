@@ -3,7 +3,7 @@
 
 SB Cotton's <strong>2019 Spring Hackathon</strong> was dedicated to allow participants create an interesting, multi-faced web app. The 3-day Hackathon provided participants a platform to explore and play with modern and emerging technologies. 
 
-The 8 participants were divided into two groups of 4. One group worked on the front-end and the other group backed the back-end. 
+The 9 participants were divided into two groups. One group of 4 worked on the front-end and the other group of 5 backed the back-end. 
 
 
 ### Front-end Group
@@ -25,6 +25,7 @@ The 8 participants were divided into two groups of 4. One group worked on the fr
 
 ### Back-end Group
 
+-
 -
 -
 -
