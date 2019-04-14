@@ -2,12 +2,13 @@
 
 var gulp = require('gulp');
 var browserSync = require('browser-sync').create();
-var sass = require('gulp-sass');
+var gulpSass = require('gulp-sass');
 var rename = require('gulp-rename');
 var del = require('del');
 var runSequence = require('run-sequence');
 var replace = require('gulp-replace');
 var injectPartials = require('gulp-inject-partials');
+var preProcess = require('gulp-preprocess');
 var inject = require('gulp-inject');
 var sourcemaps = require('gulp-sourcemaps');
 var concat = require('gulp-concat');
@@ -19,29 +20,28 @@ gulp.paths = {
 
 var paths = gulp.paths;
 
+exports.buildDist = gulp.series(sass, injectPreprocess, populateDist);
 
-
-gulp.task('sass', function () {
+function sass () {
     return gulp.src('./scss/style.scss')
         .pipe(sourcemaps.init())
-        .pipe(sass())
+        .pipe(gulpSass())
         .pipe(sourcemaps.write('./maps'))
-        .pipe(gulp.dest('./css'))
+        .pipe(gulp.dest('./dist/css'))
         .pipe(browserSync.stream());
-});
-
-
+};
+exports.sass = sass
 
 gulp.task('sass:watch', function () {
     gulp.watch('./scss/**/*.scss');
 });
 
 // Static Server + watching scss/html files
-gulp.task('serve', gulp.series('sass', function () {
+exports.serve = gulp.series(exports.buildDist, function () {
 
     browserSync.init({
         port: 3000,
-        server: "./",
+        server: "./dist/",
         ghostMode: false,
         notify: false
     });
@@ -50,7 +50,7 @@ gulp.task('serve', gulp.series('sass', function () {
     gulp.watch('**/*.html').on('change', browserSync.reload);
     gulp.watch('js/**/*.js').on('change', browserSync.reload);
 
-}));
+});
 
 
 
@@ -72,15 +72,32 @@ gulp.task('serve:lite', function () {
 
 /* inject partials like sidebar and navbar */
 gulp.task('injectPartial', function () {
-    return gulp.src("./**/chartjs.html", {
-            base: "./"
+    return gulp.src("./**/*.html", {
+            base: "."
         })
         .pipe(injectPartials())
         .pipe(gulp.dest("."));
 });
 
+function injectPreprocess() {
+    return gulp.src(["./pages/**/*.html", "./index.html"], {
+        base: "."
+    })
+    .pipe(preProcess())
+    .pipe(gulp.dest("dist/"));
+}
+exports.injectPreprocess = injectPreprocess;
+
+function populateDist() {
+    return gulp.src(["./fonts/**/*.*", "./images/**/*.*", "./js/**/*.*", "./vendors/**/*.*"], {
+        base: "."
+    })
+    .pipe(gulp.dest("./dist/"));
+}
+exports.populateDist = populateDist;
+
 /* inject Js and CCS assets into HTML */
-gulp.task('injectAssets', function () {
+function injectAssets () {
     return gulp.src('./**/*.html')
         .pipe(inject(gulp.src([
             './vendors/iconfonts/mdi/css/materialdesignicons.min.css',
@@ -103,8 +120,8 @@ gulp.task('injectAssets', function () {
         }), {
             relative: true
         }))
-        .pipe(gulp.dest('.'));
-});
+        .pipe(gulp.dest('./dist'));
+}
 
 
 
@@ -130,7 +147,8 @@ gulp.task('replacePath', function () {
 
 
 /*sequence for injecting partials and replacing paths*/
-gulp.task('inject', gulp.series('injectPartial', 'injectAssets', 'replacePathDeep'));
+//gulp.task('inject', gulp.series('injectPartial', 'replacePathDeep'));
+/*replacing system based on inject-partial with one based on gulp-preprocess -- exports.buildDist, above*/
 
 
 /*sequence for building vendor scripts and styles*/
@@ -177,7 +195,5 @@ gulp.task('buildOptionalVendorScripts', function () {
         .pipe(gulp.dest('./vendors/js'));
 });
 
-// dummy build function
-gulp.task('build', async function() {return true});
-
-gulp.task('default', gulp.series('serve'));
+exports.build = exports.buildDist
+exports.default = exports.serve;
