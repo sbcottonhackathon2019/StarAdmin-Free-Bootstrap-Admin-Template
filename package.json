@@ -1,8 +1,8 @@
 {
-  "name": "Star-Admin-Free",
-  "version": "2.0.0",
+  "name": "sbcotton-hackathon-2019-ui",
+  "version": "1.0.0",
   "description": "",
-  "main": "index.html",
+  "main": "dist/index.html",
   "dependencies": {
     "bootstrap": "4.0.0",
     "chart.js": "^2.8.0",
