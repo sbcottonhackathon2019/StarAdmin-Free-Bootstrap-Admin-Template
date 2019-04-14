@@ -8,6 +8,7 @@ var del = require('del');
 var runSequence = require('run-sequence');
 var replace = require('gulp-replace');
 var injectPartials = require('gulp-inject-partials');
+var preProcess = require('gulp-preprocess');
 var inject = require('gulp-inject');
 var sourcemaps = require('gulp-sourcemaps');
 var concat = require('gulp-concat');
@@ -23,8 +24,8 @@ function sass () {
     return gulp.src('./scss/style.scss')
         .pipe(sourcemaps.init())
         .pipe(sass())
-        .pipe(sourcemaps.write('./maps'))
-        .pipe(gulp.dest('./css'))
+        .pipe(sourcemaps.write('dist/maps'))
+        .pipe(gulp.dest('dist/css'))
         .pipe(browserSync.stream());
 };
 
@@ -74,6 +75,15 @@ gulp.task('injectPartial', function () {
         .pipe(injectPartials())
         .pipe(gulp.dest("."));
 });
+
+function injectPreprocess() {
+    return gulp.src("./**/*.html", {
+        base: "."
+    })
+    .pipe(preProcess())
+    .pipe(gulp.dest("dist/"));
+}
+exports.injectPreprocess = injectPreprocess;
 
 /* inject Js and CCS assets into HTML */
 gulp.task('injectAssets', function () {
