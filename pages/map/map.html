@@ -5,7 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Star Admin Free Bootstrap Admin Dashboard Template</title>
+  <title>Star Admin Free Bootstrap-4 Admin Dashboard Template</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="../../vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="../../vendors/css/vendor.bundle.base.css">
@@ -16,10 +16,29 @@
   <!-- inject:css -->
   <link rel="stylesheet" href="../../css/style.css">
   <!-- endinject -->
-  <link rel="shortcut icon" href="images/favicon.png" />
+  <link rel="shortcut icon" href="../../images/favicon.png" />
+
+
+  <!-- meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' / -->
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
+  <style>
+    body { margin:0; padding:0; }
+    #map { position:absolute; top:0; bottom:0; width:100%; }
+  </style>
+
 </head>
 
 <body>
+    <style>
+      .mapboxgl-popup {
+      max-width: 400px;
+      font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+      }
+  </style>
+
+
+
   <div class="container-scroller">
     <!-- partial:../../partials/_navbar.html -->
     <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
@@ -200,6 +219,7 @@
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
       <!-- partial:../../partials/_sidebar.html -->
+      
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
           <li class="nav-item nav-profile">
@@ -251,7 +271,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../pages/s/chartjs.html">
+            <a class="nav-link" href="../../pages/charts/chartjs.html">
               <i class="menu-icon mdi mdi-chart-line"></i>
               <span class="menu-title">Charts</span>
             </a>
@@ -268,6 +288,12 @@
               <span class="menu-title">Icons</span>
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../../pages/everest/index.html">
+              <i class="menu-icon mdi mdi-alarm-check"></i>
+              <span class="menu-title">Mt.Everest</span>
+            </a>
+            </li>
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
               <i class="menu-icon mdi mdi-restart"></i>
@@ -296,69 +322,12 @@
           </li>
         </ul>
       </nav>
+      
       <!-- partial -->
       <div class="main-panel">
-        <div class="content-wrapper">
-          <div class="row">
-            <div class="col-lg-12 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                  <h4 class="card-title"><strong>Line Chart of Students with their corresponding marks</strong></h4>
-                  <h4 class="card-title">Bar</h4>
-                  <canvas id="lineChart" fontstyle="bold"></canvas>
-                </div>
-              </div>
-            </div>
-            
-          
-          
-            <div class="col-lg-12 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                  <h4 class="card-title"><strong>Piechart</strong></h4>
-                  <canvas id="pie-chart" width="200" height="100"></canvas>
-                </div>
-              </div>
-            </div>
-            
-              
-                <div class="col-lg-12 grid-margin stretch-card">
-                  <div class="card">
-
-                    <div class="card-body">
-                      <h4 class="card-title"><strong>doughnut-chart</strong></h4>
-                      <canvas id="doughnut-chart" width="800" height="450"></canvas>
-
-
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-lg-12 grid-margin stretch-card">
-                    <div class="card">
-  
-                      <div class="card-body">
-                        <h4 class="card-title"><strong>polar-chart</strong></h4>
-                        <canvas id="polar-chart" width="800" height="450"></canvas>
-  
-  
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-lg-12 grid-margin stretch-card">
-                      <div class="card">
-    
-                        <div class="card-body">
-                          <h4 class="card-title"><strong>Horizontal bar chart</strong></h4>
-                          <canvas id="bar-chart-horizontal" width="800" height="450"></canvas>
-    
-    
-                        </div>
-                      </div>
-                    </div>
-            
-           
+        <div class="content-wrapper" style="padding:0">
+            <div id='map'></div>
+        </div>
         <!-- content-wrapper ends -->
         <!-- partial:../../partials/_footer.html -->
         <footer class="footer">
@@ -388,8 +357,57 @@
   <script src="../../js/misc.js"></script>
   <!-- endinject -->
   <!-- Custom js for this page-->
-  <script src="../../js/chart.js"></script>
   <!-- End custom js for this page-->
+
+
+
+  <script>
+      mapboxgl.accessToken = 'pk.eyJ1Ijoic2Jjb3R0b24iLCJhIjoiY2p1ZXl2cDViMDhydzN5cnIzd254eDRzNCJ9.aoDWGvhEGHuMhi853M-Oeg';
+      var map = new mapboxgl.Map({
+container: 'map', // container id
+style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+center: [-74.50, 40], // starting position [lng, lat]
+zoom: 9 // starting zoom
+});
+
+marker = new mapboxgl.Marker()
+        .setLngLat([-74.50, 40])
+        .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+        .setHTML('<h4>Aaja Pathak</h4><p class="map-sn">Maps</p>'))
+        .addTo(map);
+        
+
+        
+
+ marker1 = new mapboxgl.Marker()
+        .setLngLat([80.50, 50])
+        .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+        .setHTML('<h4>Anil Shrestha</h4><p class="map-sn">Welcome Page</p>'))
+        .addTo(map);
+
+marker2 = new mapboxgl.Marker()
+        .setLngLat([-75.50, 42])
+        .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+        .setHTML('<h4>Sabin Poudel</h4><p class="map-sn">Blank Page</p>'))
+        .addTo(map);
+
+marker3 = new mapboxgl.Marker()
+        .setLngLat([100.50, 142])
+        .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+        .setHTML('<h4>Bijay Upadhyaya</h4><p class="map-sn">Charts</p>'))       
+         .addTo(map);
+
+marker4 = new mapboxgl.Marker()
+        .setLngLat([-90.50, 34])
+        .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+        .setHTML('<h4>Peter Lambert</h4><p class="map-sn">Everything</p>'))
+        .addTo(map); 
+
+
+        
+              
+
+      </script>
 </body>
 
 </html>
